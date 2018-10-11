@@ -22,4 +22,6 @@
 
 ### v0.0.1
 
+- Implement integration with generic display list (see #1).
+
 - Update dev dependencies to latest version.
