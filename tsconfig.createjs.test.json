@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.test.json",
+  "compilerOptions": {
+    "outDir": "lib-test-createjs"
+  },
+  "files": [
+    "./node_modules/@types/easeljs/index.d.ts"
+  ]
+}
