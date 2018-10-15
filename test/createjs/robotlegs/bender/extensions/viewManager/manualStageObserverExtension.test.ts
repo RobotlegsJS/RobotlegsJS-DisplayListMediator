@@ -9,19 +9,32 @@ import "../../../../../entry";
 
 import { assert } from "chai";
 
-import { IContext, Context, LogLevel } from "@robotlegsjs/core";
+import { interfaces, IContext, Context, LogLevel } from "@robotlegsjs/core";
+
+import { IDisplayObject } from "../../../../../../src/robotlegs/bender/displayList/api/IDisplayObject";
+import { IDisplayObjectObserver } from "../../../../../../src/robotlegs/bender/displayList/api/IDisplayObjectObserver";
+import { IDisplayObjectObserverFactory } from "../../../../../../src/robotlegs/bender/displayList/api/IDisplayObjectObserverFactory";
 
 import { ManualStageObserverExtension } from "../../../../../../src/robotlegs/bender/extensions/viewManager/ManualStageObserverExtension";
 import { ViewManagerExtension } from "../../../../../../src/robotlegs/bender/extensions/viewManager/ViewManagerExtension";
 
+import { DisplayObjectObserver } from "../../displayList/support/DisplayObjectObserver";
+
 import { CallbackLogTarget } from "../contextView/support/CallbackLogTarget";
 import { LogParams } from "../contextView/support/LogParams";
 
-describe.skip("ManualStageObserverExtension", () => {
+describe("ManualStageObserverExtension", () => {
     let context: IContext;
 
     beforeEach(() => {
         context = new Context();
+        context.injector
+            .bind<interfaces.Factory<IDisplayObjectObserver>>(IDisplayObjectObserverFactory)
+            .toFactory<IDisplayObjectObserver>(() => {
+                return (view: IDisplayObject, useCapture: boolean): IDisplayObjectObserver => {
+                    return new DisplayObjectObserver(view, useCapture);
+                };
+            });
     });
 
     afterEach(() => {

@@ -9,7 +9,11 @@ import "../../../../../entry";
 
 import { assert } from "chai";
 
-import { IContext, Context, LogLevel } from "@robotlegsjs/core";
+import { interfaces, IContext, Context, LogLevel } from "@robotlegsjs/core";
+
+import { IDisplayObject } from "../../../../../../src/robotlegs/bender/displayList/api/IDisplayObject";
+import { IDisplayObjectObserver } from "../../../../../../src/robotlegs/bender/displayList/api/IDisplayObjectObserver";
+import { IDisplayObjectObserverFactory } from "../../../../../../src/robotlegs/bender/displayList/api/IDisplayObjectObserverFactory";
 
 import { ContextView } from "../../../../../../src/robotlegs/bender/extensions/contextView/impl/ContextView";
 import { ContextViewListenerConfig } from "../../../../../../src/robotlegs/bender/extensions/contextView/impl/ContextViewListenerConfig";
@@ -25,15 +29,24 @@ import { ViewManagerExtension } from "../../../../../../src/robotlegs/bender/ext
 import { CallbackLogTarget } from "../contextView/support/CallbackLogTarget";
 import { LogParams } from "../contextView/support/LogParams";
 
+import { DisplayObjectObserver } from "../../displayList/support/DisplayObjectObserver";
+
 import { CallbackViewHandler } from "./support/CallbackViewHandler";
 
-describe.skip("StageCrawlerExtension", () => {
+describe("StageCrawlerExtension", () => {
     let stage: createjs.Stage;
     let context: IContext;
 
     beforeEach(() => {
         stage = new createjs.Stage("canvas");
         context = new Context();
+        context.injector
+            .bind<interfaces.Factory<IDisplayObjectObserver>>(IDisplayObjectObserverFactory)
+            .toFactory<IDisplayObjectObserver>(() => {
+                return (view: IDisplayObject, useCapture: boolean): IDisplayObjectObserver => {
+                    return new DisplayObjectObserver(view, useCapture);
+                };
+            });
     });
 
     afterEach(() => {
